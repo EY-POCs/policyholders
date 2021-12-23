@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: policyholder-deployment
+  labels:
+    app: policyholders
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: policyholders
+  template:
+    metadata:
+      labels:
+        app: policyholders
+    spec:
+      containers:
+        - name: policyholders
+          image: depktacrdev.azurecr.io/ms-v1-swagger:v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: policyholders
+
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: policyholder-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: policyholders
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+
+
