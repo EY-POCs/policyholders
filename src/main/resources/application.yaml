@@ -1,0 +1,19 @@
+spring:
+  profiles: dev
+  data:
+    mongodb:
+      database: <dbname>
+#     uri: ${keyvault-secrete-name}
+
+      uri: <connection string>
+
+Azure:
+  keyvault:
+    client-id: <app registration app id> #app id
+    uri: <keyvault uri>
+    tenant-id: <app registration tenantid>
+    enabled: true
+    client-key: <app registration certifate key when created> # cert key value
+
+server:
+  ports: 8080
