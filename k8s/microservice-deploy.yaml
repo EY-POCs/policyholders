@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: policyholder-deployment
+  labels:
+    app: policyholders
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: policyholders
+  template:
+    metadata:
+      labels:
+        app: policyholders
+    spec:
+      volumes:
+        - name: app-config-volume
+          secret:
+            secretName: app-config
+      containers:
+        - name: policyholders
+          image: depktacrdev.azurecr.io/ms-v1-swagger:v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: app
+          volumeMounts:
+            - name: app-config-volume
+              mountPath: /config
+#          livenessProbe:
+#            httpGet:
+#              path: /actuator/health/liveness
+#              port: 8080
+#            initialDelaySeconds: 45
+#          readinessProbe:
+#            httpGet:
+#              path: /actuator/health/readiness
+#              port: 8080
+#            initialDelaySeconds: 45
+#                    env:
+#                      - name: spring.profiles.active
+#                        valueFrom: dev
+#                      - name: spring.data.mongodb.database
+#                        value: policymaintenance-db
+#                      - name: spring.data.mongodb.uri
+#                        value: mongodb://depktcosmosdev:FP8gFIN3eqw2fJV4BjAgCHYSQnM7oOEjHwbU2HERN3xdLYJce7r6spleStc1dES8E1yJOJ7J1KzZhvSFRwBesw==@depktcosmosdev.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@depktcosmosdev@
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-config
+type: Opaque
+stringData:
+  application.yml: |
+    spring.profile.active=dev
+    spring.data.mongodb.uri=mongodb://depktcosmosdev:FP8gFIN3eqw2fJV4BjAgCHYSQnM7oOEjHwbU2HERN3xdLYJce7r6spleStc1dES8E1yJOJ7J1KzZhvSFRwBesw==@depktcosmosdev.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@depktcosmosdev@
+    spring.data.mongodb.database=policymaintenance-db
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: policyholder-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: policyholders
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+
+
+
