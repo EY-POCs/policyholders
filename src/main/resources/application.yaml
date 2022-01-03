@@ -1,19 +1,36 @@
+### DO NOT USE (\t) TABS###
+# This section defines default properties
+# They can be overwritten by specific
+# profiles (e.g. default)
+
+---
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: policyholders
+---
+
+# This is used for dev
 spring:
   profiles: dev
   data:
     mongodb:
-      database: <dbname>
-#     uri: ${keyvault-secrete-name}
-
-      uri: <connection string>
-
-Azure:
-  keyvault:
-    client-id: <app registration app id> #app id
-    uri: <keyvault uri>
-    tenant-id: <app registration tenantid>
-    enabled: true
-    client-key: <app registration certifate key when created> # cert key value
-
+      database: policymaintenance-db
+      uri: ${depktcosmosdb}
+  redis:
+    host: depktcache.redis.cache.windows.net
+    port: 6380
+    password: OlKoQ98piPNANZLl00CL7RvWZQIvDpVgKAzCaIgD4tg=
+    ssl: true
 server:
-  ports: 8080
+  port: 8080
+
+azure:
+  keyvault:
+    client-id: 8ade2034-cba8-44c5-8cb6-515cb83a239d
+    uri: https://depkt-db-dev.vault.azure.net/
+    tenant-id: adb53b4f-b05f-4dcb-a2e1-9111380568c3
+    enabled: true
+    client-key: FOr7Q~yXCsRPLcxCwhz13eIqIUjpFIZrBYA.E
+---

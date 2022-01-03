@@ -2,6 +2,7 @@ package com.example.policyholder.services;
 
 import com.example.policyholder.models.CustomError;
 import com.example.policyholder.models.Info;
+import com.example.policyholder.models.KeyvaultCredentials;
 import com.example.policyholder.models.PolicyHolder;
 import com.example.policyholder.models.PolicyHolderDTO;
 import com.example.policyholder.repositories.PolicyHolderRepository;
@@ -21,6 +22,23 @@ public class PolicyHolderService implements IPolicyHolderService {
     // base classs for custom queries
     @Autowired
     PolicyHolderTemplate policyHolderTemplate;
+
+    @Autowired
+    ConfigurationServiceImpl configurationServiceImpl;
+
+    private final String KEYVAULT_CREDENTIAL_CACHE_NAME = "keyvaultCredentials";
+    private final String KEYVAULT_CREDENTIAL_CACHE_KEY = "saveKeyVaultCredentialsInCache";
+
+    public KeyvaultCredentials getKeyvaultCredentialFromCache(){
+        KeyvaultCredentials keyvaultCredentials = new KeyvaultCredentials();
+        try {
+            keyvaultCredentials = configurationServiceImpl.getConfigValue(
+                KEYVAULT_CREDENTIAL_CACHE_NAME, KEYVAULT_CREDENTIAL_CACHE_KEY, KeyvaultCredentials.class);
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+        }
+        return keyvaultCredentials;
+    }
 
     @Override
     public List<PolicyHolderDTO> getPolicyHolderDetails(String policyHolderId,

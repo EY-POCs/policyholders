@@ -1,6 +1,7 @@
 package com.example.policyholder.controllers;
 
 import com.example.policyholder.models.CustomError;
+import com.example.policyholder.models.KeyvaultCredentials;
 import com.example.policyholder.models.PolicyHolder;
 import com.example.policyholder.models.PolicyHolderDTO;
 import com.example.policyholder.services.PolicyHolderService;
@@ -15,6 +16,11 @@ import java.util.List;
 public class DemoController {
     @Autowired
     PolicyHolderService policyHolderService;
+
+    @GetMapping(value="/exceptionMessagesFromCache")
+    public KeyvaultCredentials getKeyvaultCredentialFromCache(){
+        return this.policyHolderService.getKeyvaultCredentialFromCache();
+    }
 
     @PutMapping(value="/policyholder", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
